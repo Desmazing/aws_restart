@@ -1,5 +1,14 @@
+# The objective of this is to understand composite data types.
+# Data type within a data type within a data type.
+
+
 import csv
+# Implements classes to read and write tabular data in csv format.
+
+
 import copy
+# Copy module provides copy functions through shallow copy and deepcopy.
+
 
 myVehicle = {
     "vin" : "<empty>",
@@ -17,7 +26,7 @@ for key,value in myVehicle.items():
 
 myInventoryList = []
 
-with open('car_fleet.csv') as csvFile:
+with open('car_definition.csv') as csvFile:
     csvReader = csv.reader(csvFile, delimiter=',')  
     lineCount = 0  
     for row in csvReader:
@@ -44,3 +53,4 @@ for myCarProperties in myInventoryList:
     for key, value in myCarProperties.items():
         print("{} : {}".format(key,value))
         print("-----")
+

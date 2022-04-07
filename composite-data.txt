@@ -1,0 +1,23 @@
+"""What is the csv module?
+	Implements classes to read and write tabular data in csv format.
+	csv is common for spreadsheets and databases.
+	includes reader and writer objects.
+	reading and writing in dictionary format is done by : DictReader and Dictwriter."""
+
+
+can we have dictionaries in a list?
+can we have lists in a dictionary?
+
+how do we access a dictionary within a list?
+what is the dict.items() doing?
+dict.get(key)?
+dict.keys()
+dict.values()
+are the above modules or???
+
+what is the copy module?
+what is the difference between deepcopy and shallowcopy?
+use examples to tell the difference. list of integers and lists.
+
+how do we use the 'with open'?
+explain the syntax for the csv.reader and csv.writer objects.
