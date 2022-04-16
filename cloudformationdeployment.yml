@@ -1,0 +1,93 @@
+Description: First CloudFormation stack deployment with CLI
+
+# my VPC with public subnet and Internet Gateway
+
+Parameters:
+
+  DesVpcCidr:
+    Type: String
+    Default: 10.0.0.0/20
+
+  PrivateSubnetCidr:
+    Type: String
+    Default: 10.0.0.0/24
+
+  AmazonLinuxAMIID:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+Resources:
+
+  DesVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref DesVpcCidr
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: Des VPC
+
+  IGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Des IGW
+
+  VPCtoIGWConnection:
+    Type: AWS::EC2::VPCGatewayAttachment
+    DependsOn:
+      - IGW
+      - DesVPC
+    Properties:
+      InternetGatewayId: !Ref IGW
+      VpcId: !Ref DesVPC
+
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    DependsOn: DesVPC
+    Properties:
+      VpcId: !Ref DesVPC
+      MapPublicIpOnLaunch: false
+      CidrBlock: !Ref PrivateSubnetCidr
+      AvailabilityZone: !Select 
+        - 0
+        - !GetAZs 
+          Ref: AWS::Region
+      Tags:
+        - Key: Name
+          Value: Private Subnet
+
+  mySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn: DesVPC
+    Properties:
+      GroupName: mysg1
+      GroupDescription: Enable access instance
+      VpcId: !Ref DesVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: newApp
+
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId:  !Ref AmazonLinuxAMIID
+      InstanceType:  t3.micro
+      SecurityGroupIds:  
+        -  !Ref mySecurityGroup
+      SubnetId:  !Ref PrivateSubnet
+      Tags:
+        -  Key:  Name
+           Value:  myEC2
+
+ 
